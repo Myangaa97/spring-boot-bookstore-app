@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{layout :: content}">
+<head>
+    <title>Browse Books</title>
+</head>
+<body>
+    <section class="books-list">
+        <div class="section-header">
+            <h3>All Books</h3>
+            <a th:href="@{/books/new}" class="btn btn-primary">Add New Book</a>
+        </div>
+
+        <form method="get" class="search-form">
+            <input type="text" name="search" placeholder="Search by title or author..." th:value="${search}">
+            <button type="submit" class="btn btn-secondary">Search</button>
+            <a th:if="${search}" th:href="@{/books}" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="book-grid" th:if="${books != null and books.hasContent()}">
+            <article class="book-card" th:each="book : ${books.content}">
+                <div class="book-cover">
+                    <img th:if="${book.coverImageUrl}" th:src="${book.coverImageUrl}" th:alt="${book.title}">
+                    <div th:unless="${book.coverImageUrl}" class="placeholder-cover">No Cover</div>
+                </div>
+                <div class="book-info">
+                    <h4 th:text="${book.title}"></h4>
+                    <p class="author" th:text="'by ' + ${book.author}"></p>
+                    <p class="category" th:if="${book.category}" th:text="${book.category.name}"></p>
+                    <p class="price" th:text="'$' + ${book.price}"></p>
+                    <div class="book-actions">
+                        <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline btn-sm">Details</a>
+                        <a th:href="@{/books/{id}/edit(id=${book.id})}" class="btn btn-secondary btn-sm">Edit</a>
+                        <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this book?')">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <p th:if="${books == null or not books.hasContent()}" class="text-center">No books found.</p>
+
+        <nav class="pagination" th:if="${books != null and books.totalPages > 1}">
+            <a th:if="${books.number > 0}" th:href="@{/books(page=0, size=${books.size}, sort=${sort}, direction=${direction}, search=${search})}" class="btn btn-outline btn-sm">First</a>
+            <a th:if="${books.number > 0}" th:href="@{/books(page=${books.number - 1}, size=${books.size}, sort=${sort}, direction=${direction}, search=${search})}" class="btn btn-outline btn-sm">Previous</a>
+
+            <span class="page-info">
+                Page <span th:text="${books.number + 1}"></span> of <span th:text="${books.totalPages}"></span>
+            </span>
+
+            <a th:if="${books.number + 1 < books.totalPages}" th:href="@{/books(page=${books.number + 1}, size=${books.size}, sort=${sort}, direction=${direction}, search=${search})}" class="btn btn-outline btn-sm">Next</a>
+            <a th:if="${books.number + 1 < books.totalPages}" th:href="@{/books(page=${books.totalPages - 1}, size=${books.size}, sort=${sort}, direction=${direction}, search=${search})}" class="btn btn-outline btn-sm">Last</a>
+        </nav>
+    </section>
+</body>
+</html>
