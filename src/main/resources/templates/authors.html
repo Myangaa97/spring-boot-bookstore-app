@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/css/author.css}">
+    <script th:src="@{/js/authors.js}" defer></script>
+</head>
+
+<body>
+    <div id="container">
+
+        <section class="card">
+            <h1>Author Management</h1>
+            <p id="message" hidden></p>
+
+            <form id="author-form">
+                <input type="text" name="" id="author-id">
+
+                <div class="form-group">
+                    <label for="author-first-name">
+                        First Name
+                    </label>
+                    <input type="text" name="" id="author-first-name">
+                </div>
+
+                <div class="form-group">
+                    <label for="author-last-name">
+                        Last Name
+                    </label>
+                    <input type="text" name="" id="author-last-name">
+                </div>
+
+                <div class="form-group">
+                    <label for="bio">
+                        Author Bio
+                    </label>
+                    <textarea name="" id="author-bio" rows="5"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="save-button">Save Button</button>
+                    <button type="button" id="cancel-button" hidden>Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Authors</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Bio</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="author-table-body">
+
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</body>
+
+</html>
