@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InAdmin Dashboard</title>
+</head>
+<body>
+	<h1>Bookstore Admin Dashboard</h1>
+	
+	<p>
+	Logged in as:
+	<strong th:text="${email}">admin@exampe.com</strong>
+	</p>
+	<nav>
+		<ul>
+			<li>
+				<a th:href="@{/books}">Manage books</a>
+			</li>
+			<li>
+				<a th:href="@{/authors}">Manage Authors</a>
+			</li>
+			<li>
+				<a th:href="@{/categories}">Manage Categories</a>
+			</li>
+		</ul>
+	</nav>
+	<form th:action="@{/logout}" method="post">
+		<button type="submit">Logout</button>
+	</form>
+</body>
+</html>
