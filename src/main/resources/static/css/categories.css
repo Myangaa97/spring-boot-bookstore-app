@@ -1,0 +1,172 @@
+* {
+	box-sizing: border-box
+}
+
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	background: #f5f5f5;
+	color: #212121;
+}
+
+.container {
+	padding: 30px;
+	width: min(1000px, calc(100%-32px));
+	margin: 0 auto;
+}
+
+.header {
+	background: #222;
+	color: #fff;
+	padding:24px 0;
+	margin-bottom: 30px;
+}
+
+.header h1 {
+	margin: 0 0 5px;
+}
+
+.header p {
+	margin: 0;
+	color: #ccc;
+}
+
+.card {
+	background: #fff;
+	padding: 24px;
+	margin-bottom: 24px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+	margin-top: 0;
+}
+
+.form-group {
+	margin-bottom: 18px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 7px;
+	font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	font: inherit;
+}
+
+.form-group textarea {
+	resize: vertical;
+}
+
+.form-buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.button {
+	border: none;
+	padding: 10px 16px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.primary {
+	background: #222;
+	color: #fff;
+}
+
+.secondary {
+	background: #ddd;
+	color: #222;
+}
+
+.edit-button {
+	background: #f0ad4e;
+}
+
+.delete-button {
+	background-color: #d9534f;
+	color: #fff;
+}
+
+.button:hover {
+	opacity: 0.85;
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.table-container {
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 12px;
+	border-bottom: 1px solid #ddd;
+	text-align: left;
+}
+
+th {
+	background-color: #f1f1f1;
+
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+}
+
+.message {
+	padding: 14px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+}
+
+.message.success {
+	background-color: #dff0d8;
+	color: #2f6627;
+}
+
+.message.error {
+	background-color: #f2dede;
+	color: #9b2c2c;
+}
+
+.empty-row {
+	text-align: center;
+	color: #777;
+	padding: 25px;
+}
+
+@media (max-width:600px) {
+	.card {
+		padding: 16px;
+	}
+
+	.section-header {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.actions {
+		flex-direction: column;
+	}
+}
