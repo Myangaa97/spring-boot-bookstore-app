@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Bookstore</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container nav">
+			<a class="logo" th:href="@{/shop}">Bookstore</a>
+			<nav>
+				<a th:href="@{/shop}">Book</a>
+				<a th:href="@{/login}">Login</a>
+				<a th:href="@{/register}">Register</a>
+			</nav>
+		</div>
+	</header>
+	
+	<main class="container">
+		<section class="hero">
+			<h1>Find your next book</h1>
+			<p>Browse our bookstore catalog.</p>
+		</section>
+		
+		<section class="filter">
+			<form th:action="@{/shop}" method="get">
+				<div class="filter-grid">
+					<div>
+						<label for="keyword">Search</label>
+						<input id="keyword" type="search" name="keyword" placeholder="Search by title" th:value="${/keyword}">
+					</div>
+					
+					<div>
+						<label for="categoryId">Category</label>
+						<select id="categoryId" name="categoryId">
+							<option value="">All categories</option>
+							<option
+							th:each="category : ${categories}"
+							th:value = "${category.id}"
+							th:text = "${category.name}"
+							th:selected = "${categoryid != null and category.id == categoryId}"
+							>
+								
+						</select>
+					</div>
+				</div>
+				
+				<div class="filter-action">
+					<button type="submit">Search</button>
+				</div>
+			</form>
+		</section>
+		
+		<section>
+			<div class="results-heading">
+				<h2>Books</h2>
+				
+				<p th:if = "${books.totalElements > 0}">
+				<span th:text = "${books.totalElements}">0</span>
+				books found
+				</p>
+			</div>
+			
+			<div class="empty-state" th:if = "${books.isEmpty()}">
+				No books found
+			</div>
+			
+			<div class="book-grid" th:if = "${!books.isEmpty()}">
+				<article class="book-card" th:each = "${book: ${books.content}">
+					<div class="book-cover-placeholder">BOOK</div>
+					<div class="book-content">
+						<p class="category" th:text = "${books.categoryName}">Programming</p>
+						<h3 th:text = "${books.title}">Clean Code</h3>
+						<p class="author">
+							<span th:text = "${books.authorFirstName}"></span>
+							<span th:text = "${books.authorLastName}"></span>
+						</p>
+						<p class="price" th:text = "${books.price + '$'}"> 3000</p>
+						<p class="stock" th:if = "${books.stockQuantity > 0}">
+							In Stock: <span th:text = "${books.stockQuantity}"></span>
+						</p>
+						<p class="out-of-stock" th:if = "${books.stockQuantity <= 0}">Out of stock</p>
+						<p class="details-button" th:href = "${/shop/book/{id}(id=${book.id})}">View Details</p>
+					</div>
+				</article>
+				
+			</div>
+		</section>
+		
+		<nav class="pagination" th:if = "${books.totalPages > 1}">
+			<a th:if = "${books.hasPrevious()}" th:href = "@{/shop(page=${books.number - 1}", keyword = ${keyword}, categoryId = ${categoryId})}>Previous</a>
+			<span>
+				Page
+				<strong th:text = "${books.number + 1}"></strong>
+			
+				of
+				<strong th:text = "${books.totalPages}">
+				1
+				</strong>
+			</span>
+			<a th:if = "${books.hasNext()}" th:href = "@{/shop(page=${books.number + 1}", keyword = ${keyword}, categoryId = ${categoryId})}>Next</a>
+		</nav>
+	</main>
+</body>
+</html>

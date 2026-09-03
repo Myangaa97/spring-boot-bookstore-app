@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${book.title + '| Bookstore'}">Book | Bookstore</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+</head>
+<body>
+	<header class="site-header">
+		<div class="container nav">
+			<a class="logo" th:href="@{/shop}">Bookstore</a>
+		</div>
+	</header>
+	
+	<main class="container">
+		<a class="back-link" th:href="@{/shop}">Back to books</a>
+		<section class="book-detail">
+			<div class="detail-cover">
+				Book
+			</div>
+			
+			<div class="detail-content">
+				<p class="category" th:text="@{book.categoryName}">Programming</p>
+				<h1 th:text="@{book.title}">Clean code</h1>
+				<p class="author">
+					by
+					<strong>
+						<span th:text="@{book.authorFirstName}"></span>
+						<span th:text="@{book.authorLastName}"></span>
+					</strong>
+				</p>
+					<dl>
+						<div>
+							<dt>ISBN</dt>
+							<dd th:text="${book.isbn}"></dd>
+						</div>
+						
+						<div>
+							<dt>Price</dt>
+							<dd th:text="${book.price + '$'}"></dd>
+						</div>
+						
+						<div>
+							<dt>Aviable Stock</dt>
+							<dd th:text="${book.stockQuantity}"></dd>
+						</div>
+					</dl>
+					<button type="button" disabled> Add to cart</button>
+				
+			</div>
+		</section>
+	</main>
+</body>
+</html>
