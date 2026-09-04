@@ -270,7 +270,7 @@ function startEdit(book) {
     stockInput.value = book.stockQuantity;
     categoryInput.value = book.categoryId;
     authorInput.value = book.authorId;
-    activeInput.value = book.active;
+    activeInput.checked = book.active;
     saveButton.textContent =
         "Update Book";
 
@@ -324,7 +324,7 @@ function resetForm() {
     bookIdInput.value = "";
     activeInput.checked = true;
     saveButton.textContent = "Save button";
-    cancelButton.hidden = false;
+    cancelButton.hidden = true;
 }
 
 function showMessage(text, isError = false) {

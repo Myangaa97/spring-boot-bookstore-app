@@ -29,13 +29,13 @@ public class UserService {
 		String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
 		
 		if(userRepository.existsByEmail(email)) {
-			System.out.println("Email is already registered");
+			throw new RuntimeException("Email is already registered: " + email);
 		}
 		
 		User user = new User();
 		user.setFirstName(request.getFirstName().trim());
 		user.setLastName(request.getLastName().trim());
-		user.setEmail(request.getEmail().trim());
+		user.setEmail(email);
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setRole(Role.CUSTOMER);
 		user.setEnabled(true);
@@ -48,7 +48,7 @@ public class UserService {
 		String email = request.email().trim().toLowerCase(Locale.ROOT);
 
 		if (userRepository.existsByEmail(email)) {
-			System.out.println("Email already exists: " + email);
+			throw new RuntimeException("Email already exists: " + email);
 		}
 
 		User user = new User();
@@ -56,7 +56,7 @@ public class UserService {
 		user.setFirstName(request.firstName().trim());
 
 		user.setLastName(request.lastName().trim());
-		user.setEmail(request.email());
+		user.setEmail(email);
 
 		String encryptedPassword = passwordEncoder.encode(request.password());
 		user.setPassword(encryptedPassword);

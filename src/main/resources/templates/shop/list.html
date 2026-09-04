@@ -28,7 +28,7 @@
 				<div class="filter-grid">
 					<div>
 						<label for="keyword">Search</label>
-						<input id="keyword" type="search" name="keyword" placeholder="Search by title" th:value="${/keyword}">
+						<input id="keyword" type="search" name="keyword" placeholder="Search by title" th:value="${keyword}">
 					</div>
 					
 					<div>
@@ -39,7 +39,7 @@
 							th:each="category : ${categories}"
 							th:value = "${category.id}"
 							th:text = "${category.name}"
-							th:selected = "${categoryid != null and category.id == categoryId}"
+							th:selected = "${categoryId != null and category.id == categoryId}"
 							>
 								
 						</select>
@@ -67,21 +67,21 @@
 			</div>
 			
 			<div class="book-grid" th:if = "${!books.isEmpty()}">
-				<article class="book-card" th:each = "${book: ${books.content}">
+				<article class="book-card" th:each="book : ${books.content}">
 					<div class="book-cover-placeholder">BOOK</div>
 					<div class="book-content">
-						<p class="category" th:text = "${books.categoryName}">Programming</p>
-						<h3 th:text = "${books.title}">Clean Code</h3>
+						<p class="category" th:text = "${book.categoryName}">Programming</p>
+						<h3 th:text = "${book.title}">Clean Code</h3>
 						<p class="author">
-							<span th:text = "${books.authorFirstName}"></span>
-							<span th:text = "${books.authorLastName}"></span>
+							<span th:text = "${book.authorFirstName}"></span>
+							<span th:text = "${book.authorLastName}"></span>
 						</p>
-						<p class="price" th:text = "${books.price + '$'}"> 3000</p>
-						<p class="stock" th:if = "${books.stockQuantity > 0}">
-							In Stock: <span th:text = "${books.stockQuantity}"></span>
+						<p class="price" th:text = "${book.price + '$'}"> 3000</p>
+						<p class="stock" th:if = "${book.stockQuantity > 0}">
+							In Stock: <span th:text = "${book.stockQuantity}"></span>
 						</p>
-						<p class="out-of-stock" th:if = "${books.stockQuantity <= 0}">Out of stock</p>
-						<p class="details-button" th:href = "${/shop/book/{id}(id=${book.id})}">View Details</p>
+						<p class="out-of-stock" th:if = "${book.stockQuantity <= 0}">Out of stock</p>
+						<a class="details-button" th:href="@{/shop/books/{id}(id=${book.id})}">View Details</a>
 					</div>
 				</article>
 				
@@ -89,7 +89,7 @@
 		</section>
 		
 		<nav class="pagination" th:if = "${books.totalPages > 1}">
-			<a th:if = "${books.hasPrevious()}" th:href = "@{/shop(page=${books.number - 1}", keyword = ${keyword}, categoryId = ${categoryId})}>Previous</a>
+			<a th:if = "${books.hasPrevious()}" th:href = "@{/shop(page=${books.number - 1}, keyword=${keyword}, categoryId=${categoryId})}">Previous</a>
 			<span>
 				Page
 				<strong th:text = "${books.number + 1}"></strong>
@@ -99,7 +99,7 @@
 				1
 				</strong>
 			</span>
-			<a th:if = "${books.hasNext()}" th:href = "@{/shop(page=${books.number + 1}", keyword = ${keyword}, categoryId = ${categoryId})}>Next</a>
+			<a th:if = "${books.hasNext()}" th:href = "@{/shop(page=${books.number + 1}, keyword=${keyword}, categoryId=${categoryId})}">Next</a>
 		</nav>
 	</main>
 </body>

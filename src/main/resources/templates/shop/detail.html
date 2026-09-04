@@ -20,13 +20,13 @@
 			</div>
 			
 			<div class="detail-content">
-				<p class="category" th:text="@{book.categoryName}">Programming</p>
-				<h1 th:text="@{book.title}">Clean code</h1>
+				<p class="category" th:text="${book.categoryName}">Programming</p>
+				<h1 th:text="${book.title}">Clean code</h1>
 				<p class="author">
 					by
 					<strong>
-						<span th:text="@{book.authorFirstName}"></span>
-						<span th:text="@{book.authorLastName}"></span>
+						<span th:text="${book.authorFirstName}"></span>
+						<span th:text="${book.authorLastName}"></span>
 					</strong>
 				</p>
 					<dl>
@@ -41,7 +41,7 @@
 						</div>
 						
 						<div>
-							<dt>Aviable Stock</dt>
+							<dt>Available Stock</dt>
 							<dd th:text="${book.stockQuantity}"></dd>
 						</div>
 					</dl>

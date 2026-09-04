@@ -1,35 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{layout :: content}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Welcome to Bookstore</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookstore</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
 </head>
 <body>
-    <section class="hero">
-        <h2>Welcome to Our Bookstore</h2>
-        <p>Discover amazing books across various categories</p>
-        <a th:href="@{/books}" class="btn btn-primary">Browse Books</a>
-    </section>
-
-    <section class="featured-books">
-        <div class="section-header">
-            <h3>Featured Books</h3>
-            <a th:href="@{/books}" class="btn btn-secondary">View All</a>
-        </div>
-        <div class="book-grid" th:if="${books != null and not #lists.isEmpty(books)}">
-            <article class="book-card" th:each="book : ${books}">
-                <div class="book-cover">
-                    <img th:if="${book.coverImageUrl}" th:src="${book.coverImageUrl}" th:alt="${book.title}">
-                    <div th:unless="${book.coverImageUrl}" class="placeholder-cover">No Cover</div>
-                </div>
-                <div class="book-info">
-                    <h4 th:text="${book.title}"></h4>
-                    <p class="author" th:text="'by ' + ${book.author}"></p>
-                    <p class="price" th:text="'$' + ${book.price}"></p>
-                    <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline">View Details</a>
-                </div>
-            </article>
-        </div>
-        <p th:if="${books == null or #lists.isEmpty(books)}" class="text-center">No books available yet.</p>
-    </section>
+	<header class="site-header">
+		<div class="container nav">
+			<a class="logo" th:href="@{/}">Bookstore</a>
+			<nav>
+				<a th:href="@{/shop}">Shop</a>
+				<a th:href="@{/login}">Login</a>
+				<a th:href="@{/register}">Register</a>
+			</nav>
+		</div>
+	</header>
+	<main class="container">
+		<section class="hero">
+			<h1>Welcome to Our Bookstore</h1>
+			<p>Discover amazing books across various categories</p>
+			<a th:href="@{/shop}" class="button">Browse Books</a>
+		</section>
+	</main>
 </body>
 </html>

@@ -54,7 +54,7 @@ function renderAuthors(authors) {
         const bioCell = document.createElement('td');
         bioCell.textContent = author.bio ?? "";
 
-        const actionCall = document.createElement('td');
+        const actionCell = document.createElement('td');
         const editButton = document.createElement('button');
         editButton.type = 'button';
         editButton.textContent = 'Edit';
@@ -71,14 +71,14 @@ function renderAuthors(authors) {
             deleteAuthor(author.id);
         });
 
-        actionCall.appendChild(editButton);
-        actionCall.appendChild(deleteButton);
+        actionCell.appendChild(editButton);
+        actionCell.appendChild(deleteButton);
 
         row.appendChild(idcell);
         row.appendChild(firstNameCell);
         row.appendChild(lastNameCell);
         row.appendChild(bioCell);
-        row.appendChild(actionCall);
+        row.appendChild(actionCell);
 
         tableBody.appendChild(row);
     }
@@ -154,8 +154,6 @@ async function handleSubmit(e) {
 
         resetForm();
         await loadAuthors();
-
-
         
     } catch (error) {
         console.error(error);
@@ -169,9 +167,10 @@ function resetForm() {
     firstNameInput.value = "";
     lastNameInput.value = "";
     bioInput.value = "";
-    saveButton.textContent = "SAve Author";
-    cancelButton.hiden = true;
+    saveButton.textContent = "Save Author";
+    cancelButton.hidden = true;
 }
+
 function startEdit(author) {
     authorIdInput.value = author.id;
     firstNameInput.value = author.firstName;

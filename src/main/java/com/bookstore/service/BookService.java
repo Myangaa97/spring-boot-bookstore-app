@@ -47,7 +47,7 @@ public class BookService {
 				.orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.categoryId()));
 
 		Author foundAuthor = authorRepository.findById(request.authorId())
-				.orElseThrow(() -> new RuntimeException("Author not found with ID: " + request.categoryId()));
+				.orElseThrow(() -> new RuntimeException("Author not found with ID: " + request.authorId()));
 
 		Book newBook = new Book();
 		newBook.setIsbn(request.isbn());
@@ -76,6 +76,9 @@ public class BookService {
 		} else if (hasKeyword) {
 			books = bookRepository.findByActiveTrueAndTitleContainingIgnoreCase(keyword.trim(), pageable);
 
+		} else if (hasCategory) {
+			books = bookRepository.findByActiveTrueAndCategoryId(categoryId, pageable);
+
 		} else {
 			books = bookRepository.findByActiveTrue(pageable);
 		}
@@ -84,9 +87,10 @@ public class BookService {
 	}
 	
 	public BookResponse findActiveBookById(Long id) {
-		Book book = bookRepository.findById(id).orElseThrow();
+		Book book = bookRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
 		if (!book.isActive()) {
-			System.out.println("Book is not active");
+			throw new RuntimeException("Book is not active with ID: " + id);
 		}
 		return toResponse(book);
 	}

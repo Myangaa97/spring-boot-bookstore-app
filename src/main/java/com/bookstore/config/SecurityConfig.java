@@ -31,6 +31,8 @@ public class SecurityConfig {
 		http.formLogin(org.springframework.security.config.Customizer.withDefaults());
 		http.logout(logout -> logout.logoutSuccessUrl("/login?logout"));
 
+		http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+
 		return http.build();
 	}
 }

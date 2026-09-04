@@ -10,10 +10,12 @@ body {
 }
 
 .container {
-	width: min(1180px, ca);
+	width: min(1180px, 100%);
+	margin: 0 auto;
+	padding: 0 20px;
 }
 
-.site-haeder {
+.site-header {
 	background: #1f2937;
 	color: #fff;
 	padding: 18px 0;
@@ -51,7 +53,7 @@ body {
 	font-size: 38px;
 }
 
-.filters {
+.filter {
 	padding: 20px;
 	margin-bottom: 32px;
 	background: #fff;

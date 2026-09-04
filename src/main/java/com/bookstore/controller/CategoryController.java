@@ -1,7 +1,5 @@
 package com.bookstore.controller;
 
-import com.bookstore.repository.CategoryRepository;
-
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +12,10 @@ import com.bookstore.service.CategoryService;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-	private final CategoryRepository categoryRepository;
 	
 	private final CategoryService categoryService;
-	public CategoryController(CategoryService categoryService, CategoryRepository categoryRepository) {
+	public CategoryController(CategoryService categoryService) {
 		this.categoryService = categoryService;
-		this.categoryRepository = categoryRepository;
 	}
 	
 	@GetMapping
