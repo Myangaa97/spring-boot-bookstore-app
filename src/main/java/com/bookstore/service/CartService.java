@@ -1,12 +1,6 @@
 package com.bookstore.service;
 
-import com.bookstore.repository.CategoryRepository;
-
-import jakarta.transaction.Transactional;
-
 import java.math.BigDecimal;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,33 +16,38 @@ import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.repository.CartRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CartService {
-	private final CategoryRepository categoryRepository;
+	
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
 	private final BookRepository bookRepository;
 	private final CurrentUserService currentUserService;
-	public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
-			BookRepository bookRepository, CurrentUserService currentUserService, CategoryRepository categoryRepository) {
-		super();
-		this.cartRepository = cartRepository;
-		this.cartItemRepository = cartItemRepository;
-		this.bookRepository = bookRepository;
-		this.currentUserService = currentUserService;
-		this.categoryRepository = categoryRepository;
+	
+	public CartService(
+			CartRepository cartRepository, 
+			CartItemRepository cartItemRepository,
+			BookRepository bookRepository, 
+			CurrentUserService currentUserService) {
+
+				this.cartRepository = cartRepository;
+				this.cartItemRepository = cartItemRepository;
+				this.bookRepository = bookRepository;
+				this.currentUserService = currentUserService;
 	}
 	
 	@Transactional
 	public Cart getOrCreateCurrentCart() {
+		
 		User user = currentUserService.getCurrenUser();
 		
 		return cartRepository.findByUser(user).orElseGet(()-> {
 			Cart cart = new Cart();
 			cart.setUser(user);
 			
-			return categoryRepository.save(cart);
-			
+			return cartRepository.save(cart);
 		});
 	}
 	
@@ -57,51 +56,61 @@ public class CartService {
 		
 		Cart cart = getOrCreateCurrentCart();
 		
-		 Book book = bookRepository.findById(request.book_id().orelseThrow();
+		Book book = bookRepository.findById(request.book_id()).orElseThrow(() -> new RuntimeException("Book not found"));
 		 
-		 if(!book.isActive()) {
-			 System.out.println("Inactive book cannot be added to the cart");
-		 }
+		if(!book.isActive()) {
+			throw new RuntimeException("Inactive book cannot be added to the cart");
+		}
 		 
-		 if(book.getStockQuantity() < 0) {
-			 System.out.println("Book is out of stock");
-		 }
+		if(book.getStockQuantity() <= 0) {
+			throw new RuntimeException("Book is out of stock");
+		}
 		 
-		 CartItem item = cartItemRepository.findByCartAndBook(cart, book).orElse(null);
+		CartItem item = cartItemRepository.findByCartAndBook(cart, book).orElse(null);
 		 
-		 int newQuantity;
-		 if(item == null) {
-			 item = newQuantity CartItem();
-			 item.setCart(cart);
-			 item.setBook(book);
-			 newQuantity = request.quantity();
-		 } else {
+		int newQuantity;
+		
+		if(item == null) {
+			item = new CartItem();
+			item.setCart(cart);
+			item.setBook(book);
+			newQuantity = request.quantity();
+		} else {
+			newQuantity = item.getQuantity() + request.quantity();
+		}
+		 
+		if (newQuantity > book.getStockQuantity()) {
+			throw new RuntimeException("Requested quantity exceeds stock");
+		}
 			 
+		item.setQuantity(newQuantity);
+		cartItemRepository.save(item);
 			 
-			 if (newQuantity > book.getStockQuantity()) {
-				 System.out.println("Requested quantity exceeds stock");
-			 }
-			 
-			 item.setQuantity(newQuantity);
-			 cartItemRepository.save(item);
-			 return getCurrentCart();
-		 }
+		return getCurrentCart();
+	}
 		 
-		 public CartResponse getCurrentCart() {
-			 Cart cart = getOrCreateCurrentCart();
+	public CartResponse getCurrentCart() {
+		Cart cart = getOrCreateCurrentCart();
 			 
-			 List<CartItem> items = cartItemRepository.findByCartOrderByIdAsc(cart);
-			 List<CartItemResponse> itemResponses = items.stream().map(this::toResponse).toList();
+		List<CartItem> items = cartItemRepository.findByCartOrderByIdAsc(cart);
+		List<CartItemResponse> itemResponses = items.stream().map(this::toResponse).toList();
 			 
-			 BigDecimal total = itemResponses.stream().map(CartItemResponse::lineTotal).reduce(BigDecimal.ZERO, BigDecimal::add)
-					 return newQuantity CartResponse(cart.getId(), itemResponses, total);
-		 }
+		BigDecimal total = itemResponses.stream()
+				.map(CartItemResponse::lineTotal)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			 
+		return new CartResponse(cart.getId(), itemResponses, total);
+	}
 		 
-		 private CartItemResponse toResponse (CartItem item) {
-			 BigDecimal lineTotal = item.getBook().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-			 return newQuantity CartItemResponse(item.getId(), item.getBook().getId()),
-					 item.getBook().getTitle(),
-					 item.getBook().getPrice(), item.getQuantity(), lineTotal();
-		 }
+	private CartItemResponse toResponse (CartItem item) {
+		BigDecimal lineTotal = item.getBook().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+		return new CartItemResponse(
+			item.getId(),
+			item.getBook().getId(),
+			item.getBook().getTitle(),
+			item.getBook().getPrice(),
+			item.getQuantity(),
+			lineTotal
+		);
 	}
 }

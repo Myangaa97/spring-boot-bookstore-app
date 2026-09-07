@@ -6,6 +6,8 @@ public record CartItemResponse(
 		Long id,
 		Long bookId,
 		String title,
+		BigDecimal price,
+        Integer quantity,
 		BigDecimal lineTotal) {
 
 }

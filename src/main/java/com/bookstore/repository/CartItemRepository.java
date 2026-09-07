@@ -12,5 +12,5 @@ import com.bookstore.entity.CartItem;
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 	List<CartItem> findByCartOrderByIdAsc(Cart cart);
 	
-	Optional<CartItem> findByCartAndBook(CartItem cart, Book book);
+	Optional<CartItem> findByCartAndBook(Cart cart, Book book);
 }
