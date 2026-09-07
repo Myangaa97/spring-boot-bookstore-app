@@ -15,7 +15,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> auth.requestMatchers(
 
-				"/register", "/css/**", "/js/**", "/images/**", "/api/health", "/error").permitAll()
+				"/","/shop","/shop/**","/register", "/css/**", "/js/**", "/images/**", "/api/health", "/error").permitAll()
 
 				.requestMatchers("/admin/**", "/books", "/authors", "/categories").hasRole("ADMIN")
 
@@ -30,6 +30,8 @@ public class SecurityConfig {
 
 		http.formLogin(org.springframework.security.config.Customizer.withDefaults());
 		http.logout(logout -> logout.logoutSuccessUrl("/login?logout"));
+
+		http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
 
 		return http.build();
 	}

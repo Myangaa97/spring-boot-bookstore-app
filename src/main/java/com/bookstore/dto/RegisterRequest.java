@@ -14,11 +14,11 @@ public class RegisterRequest {
 	private String lastName;
 	
 	@NotBlank(message = "email is required")
-	@Email(message = "Please enter a valied email")
+	@Email(message = "Please enter a valid email")
 	private String email;
 	
 	@NotBlank(message = "pass is required")
-	@Size(min = 6, max = 100, message = "Please enter a valied email")
+	@Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
 	private String password;
 	
 	public RegisterRequest(){}

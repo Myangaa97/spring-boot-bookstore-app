@@ -12,6 +12,9 @@ const saveButton = document.querySelector('#save-button');
 const cancelButton = document.querySelector('#cancel-button');
 const message = document.querySelector('#message');
 
+const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
 async function loadAuthors(){
     try {
         const response = await fetch(API_URL);
@@ -54,7 +57,7 @@ function renderAuthors(authors) {
         const bioCell = document.createElement('td');
         bioCell.textContent = author.bio ?? "";
 
-        const actionCall = document.createElement('td');
+        const actionCell = document.createElement('td');
         const editButton = document.createElement('button');
         editButton.type = 'button';
         editButton.textContent = 'Edit';
@@ -71,14 +74,14 @@ function renderAuthors(authors) {
             deleteAuthor(author.id);
         });
 
-        actionCall.appendChild(editButton);
-        actionCall.appendChild(deleteButton);
+        actionCell.appendChild(editButton);
+        actionCell.appendChild(deleteButton);
 
         row.appendChild(idcell);
         row.appendChild(firstNameCell);
         row.appendChild(lastNameCell);
         row.appendChild(bioCell);
-        row.appendChild(actionCall);
+        row.appendChild(actionCell);
 
         tableBody.appendChild(row);
     }
@@ -93,7 +96,10 @@ async function deleteAuthor(id) {
 
     try {
 		const response = await fetch(`${API_URL}/${id}`, {
-		    method: "DELETE"
+		    method: "DELETE",
+				headers: {
+					[csrfHeader]: csrfToken
+				}
 		    });
         
         if (!response.ok) {
@@ -136,7 +142,8 @@ async function handleSubmit(e) {
         const response = await fetch(url, {
             method: method,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+				[csrfHeader]: csrfToken
             },
 
             body: JSON.stringify(author)
@@ -154,8 +161,6 @@ async function handleSubmit(e) {
 
         resetForm();
         await loadAuthors();
-
-
         
     } catch (error) {
         console.error(error);
@@ -169,9 +174,10 @@ function resetForm() {
     firstNameInput.value = "";
     lastNameInput.value = "";
     bioInput.value = "";
-    saveButton.textContent = "SAve Author";
-    cancelButton.hiden = true;
+    saveButton.textContent = "Save Author";
+    cancelButton.hidden = true;
 }
+
 function startEdit(author) {
     authorIdInput.value = author.id;
     firstNameInput.value = author.firstName;
