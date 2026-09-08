@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<title>My cart</title>
+<link rel="stylesheet" th:href="@{/css/cart.css}">
+<script th:src="@{/js/cart.js}" defer></script>
+</head>
+<body>
+	<div class="container">
+		<h1>My Cart</h1>
+		<div id="cart-items">
+		
+		</div>
+		
+		<section class="cart-summary">
+			<strong>Total:</strong>
+			<span id="cart-total">0 $</span>
+		</section>
+	</div>
+</body>
+</html>

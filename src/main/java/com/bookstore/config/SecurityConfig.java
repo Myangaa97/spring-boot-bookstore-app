@@ -22,7 +22,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/users/**", "/api/books/**", "/api/authors/**", "/api/categories/**")
 				.hasRole("ADMIN")
 
-				.requestMatchers("/customer/**").hasRole("CUSTOMER")
+				.requestMatchers("/customer/**","/api/cart/**").hasRole("CUSTOMER")
 
 				.anyRequest().authenticated()
 
