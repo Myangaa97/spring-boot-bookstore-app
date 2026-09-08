@@ -6,5 +6,5 @@ import java.util.List;
 public record CartResponse(
 	Long cart_id,
 	List<CartItemResponse> items,
-	BigDecimal totalAmout) {
+	BigDecimal totalAmount) {
 }

@@ -2,8 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
 <title th:text="${book.title + '| Bookstore'}">Book | Bookstore</title>
 <link rel="stylesheet" th:href="@{/css/shop.css}">
+    <script th:src="@{/js/shop-details.js}" defer></script>
 </head>
 <body>
 	<header class="site-header">
@@ -45,7 +48,12 @@
 							<dd th:text="${book.stockQuantity}"></dd>
 						</div>
 					</dl>
-					<button type="button" disabled> Add to cart</button>
+					<button type="button" 
+					id="add-to-cart-button"
+					th:data-book-id = "${book.id}"
+					th:disabled = "${book.stockQuantity == 0}"
+					
+					> Add to cart</button>
 				
 			</div>
 		</section>

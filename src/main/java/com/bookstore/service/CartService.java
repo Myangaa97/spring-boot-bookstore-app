@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.bookstore.dto.AddCartItemRequest;
 import com.bookstore.dto.CartItemResponse;
 import com.bookstore.dto.CartResponse;
+import com.bookstore.dto.UpdateCartItemRequest;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Cart;
 import com.bookstore.entity.CartItem;
@@ -56,7 +57,7 @@ public class CartService {
 		
 		Cart cart = getOrCreateCurrentCart();
 		
-		Book book = bookRepository.findById(request.book_id()).orElseThrow(() -> new RuntimeException("Book not found"));
+		Book book = bookRepository.findById(request.bookId()).orElseThrow(() -> new RuntimeException("Book not found"));
 		 
 		if(!book.isActive()) {
 			throw new RuntimeException("Inactive book cannot be added to the cart");
@@ -100,6 +101,37 @@ public class CartService {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 			 
 		return new CartResponse(cart.getId(), itemResponses, total);
+	}
+	
+	public CartResponse updateQuantity(Long itemId, UpdateCartItemRequest request) {
+		Cart cart = getOrCreateCurrentCart();
+		
+		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		if(!item.getCart().getId().equals(cart.getId())) {
+			System.out.println("Cart item not found");
+		}
+		
+		if(request.quantity() > item.getBook().getStockQuantity()) {
+			System.out.println("Request quantity exceeds stock");
+		}
+		
+		item.setQuantity(request.quantity());
+		
+		cartItemRepository.save(item);
+		return getCurrentCart();
+	}
+	
+	@Transactional
+	public CartResponse removeItem(Long itemId) {
+		Cart cart = getOrCreateCurrentCart();
+		
+		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		if(!item.getCart().getId().equals(cart.getId())) {
+			System.out.println("Cart item not found");
+		}
+		
+		cartItemRepository.delete(item);
+		return getCurrentCart();
 	}
 		 
 	private CartItemResponse toResponse (CartItem item) {
