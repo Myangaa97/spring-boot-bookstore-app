@@ -27,7 +27,7 @@ public class OrderItem {
 	private Book book;
 	
 	@Column(name = "book_title", nullable = false)
-	private String bookTile;
+	private String bookTitle;
 	
 	@Column(name = "unit_price", nullable = false, precision = 12, scale = 2)
 	private BigDecimal unitPrice;
@@ -64,12 +64,12 @@ public class OrderItem {
 		this.book = book;
 	}
 
-	public String getBookTile() {
-		return bookTile;
+	public String getBookTitle() {
+		return bookTitle;
 	}
 
-	public void setBookTile(String bookTile) {
-		this.bookTile = bookTile;
+	public void setBookTitle(String bookTitle) {
+		this.bookTitle = bookTitle;
 	}
 
 	public BigDecimal getUnitPrice() {

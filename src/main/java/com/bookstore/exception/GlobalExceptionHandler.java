@@ -48,4 +48,16 @@ public class GlobalExceptionHandler {
 		 return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 	}
 	
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<ApiError> handleRuntimeException(RuntimeException exception) {
+		ApiError error = new ApiError(LocalDateTime.now(),
+				 HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+				 exception.getMessage(),
+				 Map.of()
+				 );
+		 
+		 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	}
+	
 }

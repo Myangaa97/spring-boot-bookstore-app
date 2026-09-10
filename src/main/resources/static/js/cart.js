@@ -28,9 +28,9 @@ async function checkout() {
 			}
 						
 		const order = await response.json();
-		alert(`Order #${order.orderId} created succ`);
+		alert(`Order #${order.orderId} created successfully`);
 						
-		window.location.href = `/customers/order/${order.orderId}`;
+		window.location.href = `/customer/orders/${order.orderId}`;
 		
 	} catch(error) {
 		console.error(error);
@@ -122,7 +122,7 @@ async function updateQuantity(id, quantity) {
 			}
 		);
 		
-		console.log("DELETE status:", response.status);
+		console.log("UPDATE status:", response.status);
 		
 	if(!response.ok) {
 		throw new Error("Quantity update failed");

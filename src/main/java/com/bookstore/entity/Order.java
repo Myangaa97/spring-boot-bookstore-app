@@ -31,7 +31,7 @@ public class Order {
 	private OrderStatus status;
 	
 	@Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
-	private BigDecimal totalAmout;
+	private BigDecimal totalAmount;
 	
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
@@ -62,12 +62,12 @@ public class Order {
 		this.status = status;
 	}
 
-	public BigDecimal getTotalAmout() {
-		return totalAmout;
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
 	}
 
-	public void setTotalAmout(BigDecimal totalAmout) {
-		this.totalAmout = totalAmout;
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 	public LocalDateTime getCreatedAt() {

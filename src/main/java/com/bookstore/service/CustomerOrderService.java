@@ -61,7 +61,7 @@ public class CustomerOrderService {
 		return new OrderResponse(
 				order.getId(),
 				order.getStatus().name(),
-				order.getTotalAmout(),
+				order.getTotalAmount(),
 				order.getCreatedAt(),
 				items);
 	}
@@ -70,7 +70,7 @@ public class CustomerOrderService {
 		return new OrderItemResponse(
 				item.getId(),
 				item.getBook().getId(),
-				item.getBookTile(),
+				item.getBookTitle(),
 				item.getUnitPrice(),
 				item.getQuantity(),
 				item.getLineTotal()

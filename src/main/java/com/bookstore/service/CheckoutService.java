@@ -53,23 +53,23 @@ public class CheckoutService {
 		User user = currentUserService.getCurrentUser();
 		
 		Cart cart = cartRepository.findByUser(user).orElseThrow(() -> {
-			throw new BusinessRuleException("Card does not exist");
+			throw new BusinessRuleException("Cart does not exist");
 		});
 		
 		List<CartItem> cartItems = cartItemRepository.findByCartOrderByIdAsc(cart);
 		if(cartItems.isEmpty()) {
-			throw new BusinessRuleException("Card is empty");
+			throw new BusinessRuleException("Cart is empty");
 		}
 		
 // 		Validate all cart items
 		for(CartItem item : cartItems) {
 			Book book = item.getBook();
 			if(!book.isActive()) {
-				throw new BusinessRuleException("Book is not available" + book.getTitle());
+				throw new BusinessRuleException("Book is not available: " + book.getTitle());
 			}
 			
 			if(item.getQuantity() > book.getStockQuantity()) {
-				throw new BusinessRuleException("Not enough book is stock" + book.getTitle());
+				throw new BusinessRuleException("Not enough books in stock: " + book.getTitle());
 			}
 		}
 		
@@ -95,7 +95,7 @@ public class CheckoutService {
 		
 		order.setUser(user);
 		order.setStatus(OrderStatus.PENDING);
-		order.setTotalAmout(totalAmount);
+		order.setTotalAmount(totalAmount);
 		order.setCreatedAt(LocalDateTime.now());
 		
 		Order savedOrder = orderRepository.save(order);
@@ -110,7 +110,7 @@ public class CheckoutService {
 			
 			orderItem.setOrder(savedOrder);
 			orderItem.setBook(book);
-			orderItem.setBookTile(book.getTitle());
+			orderItem.setBookTitle(book.getTitle());
 			orderItem.setUnitPrice(unitPrice);
 			orderItem.setQuantity(item.getQuantity());
 			orderItem.setLineTotal(totalLine);
@@ -129,7 +129,7 @@ public class CheckoutService {
 		
 		return new CheckoutResponse(savedOrder.getId(),
 					savedOrder.getStatus().name(),
-					savedOrder.getTotalAmout(),
+					savedOrder.getTotalAmount(),
 					savedOrder.getCreatedAt());
 	}
 }
