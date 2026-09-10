@@ -4,6 +4,8 @@ import com.bookstore.dto.UserCreateRequest;
 import com.bookstore.dto.UserResponse;
 import com.bookstore.service.UserService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class UserController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserResponse create(@RequestBody UserCreateRequest request) {
+	public UserResponse create(@Valid @RequestBody UserCreateRequest request) {
 		return userService.createUser(request);
 	}
 
