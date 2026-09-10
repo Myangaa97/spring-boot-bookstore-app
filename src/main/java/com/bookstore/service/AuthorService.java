@@ -1,7 +1,6 @@
 package com.bookstore.service;
 
 import com.bookstore.entity.Author;
-import com.bookstore.entity.Category;
 
 import java.util.List;
 

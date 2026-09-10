@@ -65,7 +65,7 @@ function attachCartEvents() {
 	
 	document.querySelectorAll(".remove-button").forEach(button => {
 			button.addEventListener('click', async ()=> {
-				await updateQuantity(button.dataset.id);
+				await removeItem(button.dataset.id);
 			});
 		});
 }
@@ -85,6 +85,8 @@ async function updateQuantity(id, quantity) {
 			
 			}
 		);
+		
+		console.log("DELETE status:", response.status);
 		
 	if(!response.ok) {
 		throw new Error("Quantity update failed");
