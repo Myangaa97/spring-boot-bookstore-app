@@ -15,7 +15,7 @@ public class CurrentUserService {
 		this.userRepository = userRepository;
 	}
 	
-	public User getCurrenUser() {
+	public User getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 		String email = authentication.getName();

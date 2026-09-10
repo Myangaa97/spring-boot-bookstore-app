@@ -42,7 +42,7 @@ public class CartService {
 	@Transactional
 	public Cart getOrCreateCurrentCart() {
 		
-		User user = currentUserService.getCurrenUser();
+		User user = currentUserService.getCurrentUser();
 		
 		return cartRepository.findByUser(user).orElseGet(()-> {
 			Cart cart = new Cart();
@@ -103,34 +103,46 @@ public class CartService {
 		return new CartResponse(cart.getId(), itemResponses, total);
 	}
 	
+	@Transactional
 	public CartResponse updateQuantity(Long itemId, UpdateCartItemRequest request) {
 		Cart cart = getOrCreateCurrentCart();
 		
-		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		CartItem item = cartItemRepository.findById(itemId)
+				.orElseThrow(() -> new RuntimeException("Cart item not found"));
+		
 		if(!item.getCart().getId().equals(cart.getId())) {
-			System.out.println("Cart item not found");
+			throw new RuntimeException("cart item does not belong to currenr cart");
+		}
+		
+		if(request.quantity() <= 0) {
+			throw new RuntimeException("Quantity must be greater than 0");
 		}
 		
 		if(request.quantity() > item.getBook().getStockQuantity()) {
-			System.out.println("Request quantity exceeds stock");
+			throw new RuntimeException("Request quantity exceeds stock");
 		}
 		
 		item.setQuantity(request.quantity());
 		
 		cartItemRepository.save(item);
+		
 		return getCurrentCart();
 	}
 	
 	@Transactional
 	public CartResponse removeItem(Long itemId) {
+		
 		Cart cart = getOrCreateCurrentCart();
 		
-		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		CartItem item = cartItemRepository.findById(itemId)
+				.orElseThrow(() -> new RuntimeException("Cart item not found"));
+		
 		if(!item.getCart().getId().equals(cart.getId())) {
-			System.out.println("Cart item not found");
+			throw new RuntimeException("Cart item does not belong to current cart");
 		}
 		
 		cartItemRepository.delete(item);
+		
 		return getCurrentCart();
 	}
 		 
