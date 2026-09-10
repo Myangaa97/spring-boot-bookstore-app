@@ -15,6 +15,8 @@ import com.bookstore.dto.BookRequest;
 import com.bookstore.dto.BookResponse;
 import com.bookstore.service.BookService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/books")
@@ -31,7 +33,7 @@ public class BookController {
 	}
 
 	@PostMapping
-	public BookResponse create(@RequestBody BookRequest request) {
+	public BookResponse create(@Valid @RequestBody BookRequest request) {
 		return bookService.createBook(request);
 	}
 
