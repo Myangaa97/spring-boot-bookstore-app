@@ -42,7 +42,7 @@ public class CartService {
 	@Transactional
 	public Cart getOrCreateCurrentCart() {
 		
-		User user = currentUserService.getCurrenUser();
+		User user = currentUserService.getCurrentUser();
 		
 		return cartRepository.findByUser(user).orElseGet(()-> {
 			Cart cart = new Cart();
@@ -104,6 +104,7 @@ public class CartService {
 	}
 	
 	public CartResponse updateQuantity(Long itemId, UpdateCartItemRequest request) {
+		
 		Cart cart = getOrCreateCurrentCart();
 		
 		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
@@ -118,6 +119,7 @@ public class CartService {
 		item.setQuantity(request.quantity());
 		
 		cartItemRepository.save(item);
+		
 		return getCurrentCart();
 	}
 	
