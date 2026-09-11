@@ -15,14 +15,14 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> auth.requestMatchers(
 
-				"/","/shop","/shop/**","/register", "/css/**", "/js/**", "/images/**", "/api/health", "/error").permitAll()
+				"/","/shop","/shop/**","/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
 
 				.requestMatchers("/admin/**", "/books", "/authors", "/categories").hasRole("ADMIN")
 
 				.requestMatchers("/api/users/**", "/api/books/**", "/api/authors/**", "/api/categories/**")
 				.hasRole("ADMIN")
 
-				.requestMatchers("/customer/**","/api/cart/**").hasRole("CUSTOMER")
+				.requestMatchers("/customer/**","/api/cart/**", "/api/checkout/**", "/api/customer/**" + "").hasRole("CUSTOMER")
 
 				.anyRequest().authenticated()
 

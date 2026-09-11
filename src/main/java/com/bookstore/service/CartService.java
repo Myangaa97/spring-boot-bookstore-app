@@ -13,6 +13,8 @@ import com.bookstore.entity.Book;
 import com.bookstore.entity.Cart;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.User;
+import com.bookstore.exception.BusinessRuleException;
+import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.repository.CartRepository;
@@ -57,14 +59,14 @@ public class CartService {
 		
 		Cart cart = getOrCreateCurrentCart();
 		
-		Book book = bookRepository.findById(request.bookId()).orElseThrow(() -> new RuntimeException("Book not found"));
+		Book book = bookRepository.findById(request.bookId()).orElseThrow(() -> new ResourceNotfoundException("Book not found"));
 		 
 		if(!book.isActive()) {
-			throw new RuntimeException("Inactive book cannot be added to the cart");
+			throw new BusinessRuleException("Inactive book cannot be added to the cart");
 		}
 		 
 		if(book.getStockQuantity() <= 0) {
-			throw new RuntimeException("Book is out of stock");
+			throw new BusinessRuleException("Book is out of stock");
 		}
 		 
 		CartItem item = cartItemRepository.findByCartAndBook(cart, book).orElse(null);
@@ -81,7 +83,7 @@ public class CartService {
 		}
 		 
 		if (newQuantity > book.getStockQuantity()) {
-			throw new RuntimeException("Requested quantity exceeds stock");
+			throw new BusinessRuleException("Requested quantity exceeds stock");
 		}
 			 
 		item.setQuantity(newQuantity);
@@ -90,6 +92,7 @@ public class CartService {
 		return getCurrentCart();
 	}
 		 
+	@Transactional
 	public CartResponse getCurrentCart() {
 		Cart cart = getOrCreateCurrentCart();
 			 
@@ -103,17 +106,19 @@ public class CartService {
 		return new CartResponse(cart.getId(), itemResponses, total);
 	}
 	
+	@Transactional
 	public CartResponse updateQuantity(Long itemId, UpdateCartItemRequest request) {
 		
 		Cart cart = getOrCreateCurrentCart();
 		
-		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		CartItem item = cartItemRepository.findById(itemId)
+				.orElseThrow(() -> new ResourceNotfoundException("Cart item not found"));
 		if(!item.getCart().getId().equals(cart.getId())) {
-			System.out.println("Cart item not found");
+			throw new BusinessRuleException("Cart item does not belong to current user");
 		}
 		
 		if(request.quantity() > item.getBook().getStockQuantity()) {
-			System.out.println("Request quantity exceeds stock");
+			throw new BusinessRuleException("Request quantity exceeds stock");
 		}
 		
 		item.setQuantity(request.quantity());
@@ -127,9 +132,10 @@ public class CartService {
 	public CartResponse removeItem(Long itemId) {
 		Cart cart = getOrCreateCurrentCart();
 		
-		CartItem item = cartItemRepository.findById(itemId).orElseThrow();
+		CartItem item = cartItemRepository.findById(itemId)
+				.orElseThrow(() -> new ResourceNotfoundException("Cart item not found"));
 		if(!item.getCart().getId().equals(cart.getId())) {
-			System.out.println("Cart item not found");
+			throw new BusinessRuleException("Cart item does not belong to current user");
 		}
 		
 		cartItemRepository.delete(item);
