@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+    <script th:src="@{/js/order-detail.js}" defer></script>
+    <title>My Order Detail</title>
+</head>
+<body>
+    <div class="continer" th:date-order-id="${order.id}" id="order-page">
+        <a th:href="@{/customer/orders}">Back to orders</a>
+        <h1>Order # <span th:text="${order.id}"></span></h1>
+        <div id="order-summary">
+            <p>Status: <strong id="order-status" th:text="${order.status}"></strong></p>
+            <p>Date: <strong th:text="${order.createdAt}"></strong></p>
+            <p>Total: <strong th:text="${order.totalAmount + '$'}"></strong></p>
+        </div>
+
+        <h1>Items</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item: ${order.items}">
+                    <td th:text="${item.bookTitle}"></td>
+                    <td th:text="${item.unitPrice + '$'}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.lineTotal + '$'}"></td>
+                </tr>
+
+                
+            </tbody>
+        </table>
+        <button type="button" id="cancel-order-button" th:if="${order.status == 'PENDING' or order.status == 'CONFIRMED'}">
+            Cancel Order
+        </button>
+    </div>
+</body>
+</html>
