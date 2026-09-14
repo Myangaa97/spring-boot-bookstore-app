@@ -11,7 +11,13 @@
 		Logged in as:
 		<strong th:text="${email}">admin@exampe.com</strong>
 	</p>
-	<p>Cart and Orders will be added later</p>
+	
+	<p>
+		<a th:href="@{/shop}">Browse Books</a>
+        <a th:href="@{/customer/cart}">My Cart</a>
+        <a th:href="@{/customer/orders}">My Orders</a>
+	</p>
+
 	<form th:action="@{/logout}" method="post">
 		<button type="submit">Logout</button>
 	</form>

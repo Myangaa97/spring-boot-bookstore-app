@@ -11,6 +11,7 @@ import com.bookstore.dto.UserCreateRequest;
 import com.bookstore.dto.UserResponse;
 import com.bookstore.entity.Role;
 import com.bookstore.entity.User;
+import com.bookstore.exception.DuplicateResourceException;
 import com.bookstore.repository.UserRepository;
 
 
@@ -29,7 +30,7 @@ public class UserService {
 		String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
 		
 		if(userRepository.existsByEmail(email)) {
-			throw new RuntimeException("Email is already registered: " + email);
+			throw new DuplicateResourceException("Email is already registered: " + email);
 		}
 		
 		User user = new User();
@@ -48,7 +49,7 @@ public class UserService {
 		String email = request.email().trim().toLowerCase(Locale.ROOT);
 
 		if (userRepository.existsByEmail(email)) {
-			throw new RuntimeException("Email already exists: " + email);
+			throw new DuplicateResourceException("Email already exists: " + email);
 		}
 
 		User user = new User();

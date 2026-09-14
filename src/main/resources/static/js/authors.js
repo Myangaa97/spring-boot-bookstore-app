@@ -19,7 +19,7 @@ async function loadAuthors(){
     try {
         const response = await fetch(API_URL);
         if (!response.ok) {
-            throw new Error("Authrs could not be loaded");
+            throw new Error("Authors could not be loaded");
         }
         const data = await response.json();
 
@@ -27,7 +27,7 @@ async function loadAuthors(){
 
     } catch (error) {
         console.error(error);
-        showMesage("Authors could not be loaded");
+            showMessage("Authors could not be loaded");
     }
 }
 
@@ -106,13 +106,13 @@ async function deleteAuthor(id) {
             throw new Error("Delete failed");
         }
 
-        showMesage("Author deleted successfully");
+        showMessage("Author deleted successfully");
         resetForm();
         await loadAuthors();
 
     } catch (error) {
         console.error(error);
-        showMesage("Author could not be deleted");
+        showMessage("Author could not be deleted");
     }
 }
 
@@ -129,7 +129,7 @@ async function handleSubmit(e) {
     };
 
     if(author.firstName === "" || author.lastName === "") {
-        showMesage("First name and last name required");
+        showMessage("First name and last name required");
         return;
     }
 
@@ -154,9 +154,9 @@ async function handleSubmit(e) {
         }
 
         if (isEditing) {
-            showMesage("Author Updated seccussfully");
+            showMessage("Author Updated successfully");
         } else {
-            showMesage("Author Created successfully");
+            showMessage("Author Created successfully");
         }
 
         resetForm();
@@ -164,7 +164,7 @@ async function handleSubmit(e) {
         
     } catch (error) {
         console.error(error);
-        showMesage("Request Failed")
+        showMessage("Request Failed")
     }
 }
 
@@ -183,11 +183,11 @@ function startEdit(author) {
     firstNameInput.value = author.firstName;
     lastNameInput.value = author.lastName;
     bioInput.value = author.bio ?? "";
-    saveButton.textContent = "Update button";
+    saveButton.textContent = "Update Author";
     cancelButton.hidden = false;
 }
 
-function showMesage(text) {
+function showMessage(text) {
     message.textContent = text;
     message.hidden = false;
 

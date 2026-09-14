@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/customer-orders.css}">
+    <title>Document</title>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a th:href="@{/shop}" class="logo">Bookstore</a>
+
+            <nav>
+                <a th:href="@{/shop}">Shop</a>
+                <a th:href="@{/customer/cart}">Cart</a>
+                <a th:href="@{/customer}">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <div>
+                <h1>My orders</h1>
+                <p>View your order history and current status</p>
+            </div>
+            <a th:href="@{/shop}" class="button">Continue Shoppping</a>
+        </div>
+
+        <section class="empty-state" th:if="${#lists.isEmpty(orders)}">
+            <h2>No orders yet</h2>
+            <p>You have not placed any orders</p>
+            <a th:href="@{/shop}" class="button">Browse Books</a>
+        </section>
+
+        <section class="orders" th:unless="${#lists.isEmpty(orders)}">
+            <article class="order-card" th:each="order: ${orders}">
+                <div class="order-main">
+                    <h2>Order # <span th:text="${order.id}"></span></h2>
+                    <p class="muted">Placed<span th:text="${order.createdAt}"></span></p>
+                </div>
+                <div>
+                    <span class="status-badge" th:text="${order.status}">PENDING</span>
+                </div>
+                <div class="order-total">
+                    <span class="muted">Total</span>
+                    <strong th:text="${order.totalAmount + '$'}"> 0 $</strong>
+                </div>
+                <div>
+                    <a href="" class="detail-link" th:href="@{/customer/orders/{id}(id=${order.id})}">
+                        View Details
+                    </a>
+                </div>
+            </article>
+        </section>
+
+    </main>
+</body>
+</html>

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.bookstore.entity.Category;
+import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.CategoryRepository;
 
 @Service
@@ -20,7 +21,8 @@ public class CategoryService {
 	}
 	
 	public Category findCategoryByid(Long id) {
-		return categoryRepository.findById(id).orElseThrow();
+		return categoryRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotfoundException("Category not found with ID: " + id));
 	}
 	
 	public Category createCategory(Category category) {
@@ -28,14 +30,16 @@ public class CategoryService {
 	}
 	
 	public Category updateCategory(Long id, Category newCategory) {
-		Category foundCategory = categoryRepository.findById(id).orElseThrow();
+		Category foundCategory = categoryRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotfoundException("Category not found with ID: " + id));
 		
 		foundCategory.setName(newCategory.getName());
 		return categoryRepository.save(foundCategory);
 	}
 	
 	public void deleteCategory(Long id) {
-		Category foundCategory = categoryRepository.findById(id).orElseThrow();
+		Category foundCategory = categoryRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotfoundException("Category not found with ID: " + id));
 		categoryRepository.delete(foundCategory);
 	}
 }

@@ -24,7 +24,7 @@ public class BookstoreUserDetailsService implements UserDetailsService {
 		String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
 
 		User user = userRepository.findByEmail(normalizedEmail)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found" + normalizedEmail));
+				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + normalizedEmail));
 
 		return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
 				.password(user.getPassword()).roles(user.getRole().name()).disabled(!user.isEnabled()).build();

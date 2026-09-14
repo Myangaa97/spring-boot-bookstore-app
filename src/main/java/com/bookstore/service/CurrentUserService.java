@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.bookstore.entity.User;
+import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.UserRepository;
 
 @Service
@@ -20,7 +21,8 @@ public class CurrentUserService {
 		
 		String email = authentication.getName();
 		
-		User foundUser = userRepository.findByEmail(email).orElseThrow();
+		User foundUser = userRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotfoundException("User not found with email: " + email));
 		return foundUser;
 	}
 }

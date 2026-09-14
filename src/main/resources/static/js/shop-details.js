@@ -25,7 +25,7 @@ if(button) {
 		}
 		
 		if(!response.ok) {
-			alert("Coulfd not add to cart");
+			alert("Could not add to cart");
 			return;
 		}
 		

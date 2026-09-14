@@ -1,6 +1,7 @@
 package com.bookstore.service;
 
 import com.bookstore.entity.Author;
+import com.bookstore.exception.ResourceNotfoundException;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class AuthorService {
 	}
 	
 	public Author findAuthorByid(Long id) {
-		return authorRepository.findById(id).orElseThrow();
+		return authorRepository.findById(id).orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + id));
 	}
 	
 	public Author createAuthor(Author author) {
@@ -28,7 +29,8 @@ public class AuthorService {
 	}
 	
 	public Author updateAuthor(Long id, Author newAuthor) {
-		Author foundAuthor = authorRepository.findById(id).orElseThrow();
+		Author foundAuthor = authorRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + id));
 		foundAuthor.setFirstName(newAuthor.getFirstName());
 		foundAuthor.setLastName(newAuthor.getLastName());
 		foundAuthor.setBio(newAuthor.getBio());
@@ -36,7 +38,8 @@ public class AuthorService {
 	}
 	
 	public void deleteAuthor(Long id) {
-		Author foundAuthor = authorRepository.findById(id).orElseThrow();
+		Author foundAuthor = authorRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + id));
 		authorRepository.delete(foundAuthor);
 	}
 }

@@ -12,6 +12,8 @@ import com.bookstore.dto.BookResponse;
 import com.bookstore.entity.Author;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Category;
+import com.bookstore.exception.DuplicateResourceException;
+import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.AuthorRepository;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
@@ -40,14 +42,14 @@ public class BookService {
 		 */
 
 		if (bookRepository.existsByIsbn(request.isbn())) {
-			throw new RuntimeException("Book already exists with ISBN: " + request.isbn());
+			throw new DuplicateResourceException("Book already exists with ISBN: " + request.isbn());
 		}
 
 		Category foundCategory = categoryRepository.findById(request.categoryId())
-				.orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.categoryId()));
+				.orElseThrow(() -> new ResourceNotfoundException("Category not found with ID: " + request.categoryId()));
 
 		Author foundAuthor = authorRepository.findById(request.authorId())
-				.orElseThrow(() -> new RuntimeException("Author not found with ID: " + request.authorId()));
+				.orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + request.authorId()));
 
 		Book newBook = new Book();
 		newBook.setIsbn(request.isbn());
@@ -88,9 +90,9 @@ public class BookService {
 	
 	public BookResponse findActiveBookById(Long id) {
 		Book book = bookRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+				.orElseThrow(() -> new ResourceNotfoundException("Book not found with ID: " + id));
 		if (!book.isActive()) {
-			throw new RuntimeException("Book is not active with ID: " + id);
+			throw new ResourceNotfoundException("Book is not active with ID: " + id);
 		}
 		return toResponse(book);
 	}
@@ -100,18 +102,18 @@ public class BookService {
 //		1. Find existing book for the id
 
 		Book foundBook = bookRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+				.orElseThrow(() -> new ResourceNotfoundException("Book not found with ID: " + id));
 
 //		2. Find category of the request
 		Category category = categoryRepository.findById(request.categoryId())
-				.orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.categoryId()));
+				.orElseThrow(() -> new ResourceNotfoundException("Category not found with ID: " + request.categoryId()));
 
 //		3. Find author of the request
 		Author author = authorRepository.findById(request.authorId())
-				.orElseThrow(() -> new RuntimeException("Author not found with ID: " + request.authorId()));
+				.orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + request.authorId()));
 		// check whether ISBN is used another book with the id
 		if (bookRepository.existsByIsbn(request.isbn()) && !foundBook.getIsbn().equals(request.isbn())) {
-			throw new RuntimeException("Another book already uses ISBN: " + request.isbn());
+			throw new DuplicateResourceException("Another book already uses ISBN: " + request.isbn());
 		}
 
 		foundBook.setTitle(request.title());
@@ -128,7 +130,7 @@ public class BookService {
 
 	public void deleteBook(Long id) {
 		Book book = bookRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+				.orElseThrow(() -> new ResourceNotfoundException("Book not found with ID: " + id));
 		bookRepository.delete(book);
 	}
 
