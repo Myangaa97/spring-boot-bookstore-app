@@ -8,6 +8,7 @@ public record OrderResponse(
 		Long id,
 		String status,
 		BigDecimal totalAmount,
+		String paymentStatus,
 		LocalDateTime createdAt,
 		List<OrderItemResponse> items
 		) {

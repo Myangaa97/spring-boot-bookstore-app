@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users", uniqueConstraints = 
-{ @UniqueConstraint(name = "uk_users_email", 
+@Table(name = "users", uniqueConstraints = {
+		@UniqueConstraint(name = "uk_users_email", 
 		columnNames = "email") })
 public class User {
 
@@ -106,7 +106,4 @@ public class User {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
-	
-
 }
