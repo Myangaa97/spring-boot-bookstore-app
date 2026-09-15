@@ -9,4 +9,6 @@ import com.bookstore.entity.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	List<OrderItem> findByOrderOrderByIdAsc(Order order);
+
+	List<OrderItem> findByOrderIdInOrderByIdAsc(List<Long> orderIds);
 }

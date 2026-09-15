@@ -52,9 +52,8 @@ public class CheckoutService {
 		
 		User user = currentUserService.getCurrentUser();
 		
-		Cart cart = cartRepository.findByUser(user).orElseThrow(() -> {
-			throw new BusinessRuleException("Cart does not exist");
-		});
+		Cart cart = cartRepository.findByUser(user)
+				.orElseThrow(() -> new BusinessRuleException("Cart does not exist"));
 		
 		List<CartItem> cartItems = cartItemRepository.findByCartOrderByIdAsc(cart);
 		if(cartItems.isEmpty()) {
@@ -86,8 +85,8 @@ public class CheckoutService {
 		// stream -> map -> reduce
 		BigDecimal totalAmount = cartItems
 				.stream()
-					.map(ItemEvent -> ItemEvent.getBook().getPrice()
-						.multiply(BigDecimal.valueOf(ItemEvent.getQuantity())))
+					.map(item -> item.getBook().getPrice()
+						.multiply(BigDecimal.valueOf(item.getQuantity())))
 						.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		// 3. Create order
@@ -118,7 +117,11 @@ public class CheckoutService {
 			orderItemRepository.save(orderItem);
 			
 			// 5. reduce book stock
-			book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
+			int newStockQuantity = book.getStockQuantity() - item.getQuantity();
+			if (newStockQuantity < 0) {
+				throw new BusinessRuleException("Not enough books in stock: " + book.getTitle());
+			}
+			book.setStockQuantity(newStockQuantity);
 			bookRepository.save(book);
 		}
 		

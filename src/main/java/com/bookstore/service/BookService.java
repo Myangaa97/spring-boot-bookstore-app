@@ -2,16 +2,19 @@ package com.bookstore.service;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstore.dto.BookRequest;
 import com.bookstore.dto.BookResponse;
 import com.bookstore.entity.Author;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Category;
+import com.bookstore.exception.BusinessRuleException;
 import com.bookstore.exception.DuplicateResourceException;
 import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.AuthorRepository;
@@ -31,10 +34,12 @@ public class BookService {
 		this.authorRepository = authorRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public List<BookResponse> findAllBooks() {
 		return bookRepository.findAll().stream().map(this::toResponse).toList();
 	}
 
+	@Transactional
 	public BookResponse createBook(BookRequest request) {
 		/**
 		 * { "title": "Clean Code", "isbn": "9780132350884", "price": 95000,
@@ -66,8 +71,11 @@ public class BookService {
 		return toResponse(savedBook);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<BookResponse> findShopBooks(String keyword, Long categoryId, int page, int size) {
-		Pageable pageable = PageRequest.of(page, size);
+		int safePage = Math.max(page, 0);
+		int safeSize = Math.max(size, 1);
+		Pageable pageable = PageRequest.of(safePage, safeSize);
 
 		Page<Book> books;
 		boolean hasKeyword = keyword != null && !keyword.isBlank();
@@ -98,6 +106,7 @@ public class BookService {
 	}
 	
 
+	@Transactional
 	public BookResponse updateBook(Long id, BookRequest request) {
 //		1. Find existing book for the id
 
@@ -112,7 +121,7 @@ public class BookService {
 		Author author = authorRepository.findById(request.authorId())
 				.orElseThrow(() -> new ResourceNotfoundException("Author not found with ID: " + request.authorId()));
 		// check whether ISBN is used another book with the id
-		if (bookRepository.existsByIsbn(request.isbn()) && !foundBook.getIsbn().equals(request.isbn())) {
+		if (bookRepository.existsByIsbnAndIdNot(request.isbn(), id)) {
 			throw new DuplicateResourceException("Another book already uses ISBN: " + request.isbn());
 		}
 
@@ -128,10 +137,15 @@ public class BookService {
 		return toResponse(updatedBook);
 	}
 
+	@Transactional
 	public void deleteBook(Long id) {
 		Book book = bookRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotfoundException("Book not found with ID: " + id));
-		bookRepository.delete(book);
+		try {
+			bookRepository.delete(book);
+		} catch (DataIntegrityViolationException e) {
+			throw new BusinessRuleException("Book cannot be deleted because cart items or order items reference it");
+		}
 	}
 
 //	this is always below the public methods

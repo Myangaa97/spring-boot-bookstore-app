@@ -10,7 +10,7 @@ public class PasswordConfig {
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
-		// RSA - BCrypt Encryption algorithm
+		// BCrypt hashing algorithm for password encoding
 		return new BCryptPasswordEncoder();
 	}
 }

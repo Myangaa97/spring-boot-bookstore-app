@@ -8,6 +8,15 @@ const cartItems = document.querySelector("#cart-items");
 const cartTotal = document.querySelector("#cart-total");
 const checkoutButton = document.querySelector("#checkout-button");
 
+async function errorMessage(response, fallback) {
+	try {
+		const data = await response.json();
+		return data && data.message ? data.message : fallback;
+	} catch (e) {
+		return `${fallback} (HTTP ${response.status})`;
+	}
+}
+
 async function checkout() {
 	const confirmed = confirm("Place the order");
 	if(!confirmed) {
@@ -23,14 +32,13 @@ async function checkout() {
 		});
 		
 		if(!response.ok) {
-		const errorData = await response.json();
-		throw new Error(errorData.message || "Checkout failed");
-			}
+			throw new Error(await errorMessage(response, "Checkout failed"));
+		}
 						
 		const order = await response.json();
 		alert(`Order #${order.orderId} created successfully`);
 						
-		window.location.href = `/customer/orders/${order.orderId}`;
+		window.location.href = order && order.orderId ? `/customer/orders/${order.orderId}` : "/customer/orders";
 		
 	} catch(error) {
 		console.error(error);
@@ -125,7 +133,7 @@ async function updateQuantity(id, quantity) {
 		console.log("UPDATE status:", response.status);
 		
 	if(!response.ok) {
-		throw new Error("Quantity update failed");
+		throw new Error(await errorMessage(response, "Quantity update failed"));
 	}
 	const cart = await response.json();
 	renderCart(cart);
@@ -142,7 +150,7 @@ async function removeItem(id) {
 	);
 			        
 	if(!response.ok) {
-		throw new Error("Item delete failed");
+		throw new Error(await errorMessage(response, "Item delete failed"));
 	}
 	const cart = await response.json();
 	renderCart(cart);

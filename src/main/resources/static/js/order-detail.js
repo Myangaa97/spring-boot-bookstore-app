@@ -23,7 +23,7 @@ async function cancelOrder() {
         const response = await fetch(`/api/customer/orders/${orderId}/cancel`,
             {
                 method: "PUT",
-                header: {[csrfHeader]: csrfToken}
+                headers: {[csrfHeader]: csrfToken}
             }
         );
         if (!response.ok) {

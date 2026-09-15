@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.bookstore.entity.User;
+import com.bookstore.exception.BusinessRuleException;
 import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.UserRepository;
 
@@ -18,6 +19,11 @@ public class CurrentUserService {
 	
 	public User getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication == null || !authentication.isAuthenticated()
+				|| "anonymousUser".equals(authentication.getPrincipal())) {
+			throw new BusinessRuleException("User is not authenticated");
+		}
 		
 		String email = authentication.getName();
 		

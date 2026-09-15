@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.bookstore.dto.RegisterRequest;
+import com.bookstore.exception.DuplicateResourceException;
 import com.bookstore.service.UserService;
 
 import jakarta.validation.Valid;
@@ -36,8 +37,8 @@ public class RegisterController {
 		
 		try {
 			userService.registerCustomer(request);
-		} catch (Exception e) {
-			bindingResult.rejectValue("email", "duplicate", e.getMessage());
+		} catch (DuplicateResourceException e) {
+			bindingResult.rejectValue("email", "duplicate", "Email is already registered");
 			return "register";
 		}
 		
