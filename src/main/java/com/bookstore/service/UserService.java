@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstore.dto.RegisterRequest;
 import com.bookstore.dto.UserCreateRequest;
@@ -26,7 +27,11 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+	@Transactional
 	public void registerCustomer(RegisterRequest request) {
+		if (request == null) {
+			throw new IllegalArgumentException("Registration request cannot be null");
+		}
 		String email = request.getEmail().trim().toLowerCase(Locale.ROOT);
 		
 		if(userRepository.existsByEmail(email)) {
@@ -44,7 +49,12 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	@Transactional
 	public UserResponse createUser(UserCreateRequest request) {
+
+		if (request == null) {
+			throw new IllegalArgumentException("User create request cannot be null");
+		}
 
 		String email = request.email().trim().toLowerCase(Locale.ROOT);
 
@@ -71,6 +81,7 @@ public class UserService {
 		return toResponse(savedUser);
 	}
 
+	@Transactional(readOnly = true)
 	public List<UserResponse> findAllUsers() {
 		return userRepository.findAll().stream()
 				.map(this::toResponse).toList();

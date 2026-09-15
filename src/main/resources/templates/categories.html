@@ -5,7 +5,7 @@
 <meta name="_csrf" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 	<title>Category Management</title>
-	<link rel="stylesheet" href="/css/categories.css">
+	<link rel="stylesheet" th:href="@{/css/categories.css}">
 </head>
 <body>
 	<header class="header">

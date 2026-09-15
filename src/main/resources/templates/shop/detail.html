@@ -50,7 +50,7 @@
 					</dl>
 					<button type="button" 
 					id="add-to-cart-button"
-					th:data-book-id = "${book.id}"
+					th:attr="data-book-id=${book.id}"
 					th:disabled = "${book.stockQuantity == 0}"
 					
 					> Add to cart</button>

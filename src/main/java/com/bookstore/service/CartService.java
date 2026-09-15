@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstore.dto.AddCartItemRequest;
 import com.bookstore.dto.CartItemResponse;
@@ -18,8 +19,6 @@ import com.bookstore.exception.ResourceNotfoundException;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.repository.CartRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class CartService {
@@ -57,6 +56,10 @@ public class CartService {
 	@Transactional
 	public CartResponse addItem(AddCartItemRequest request) {
 		
+		if (request.quantity() <= 0) {
+			throw new BusinessRuleException("Quantity must be greater than zero");
+		}
+		
 		Cart cart = getOrCreateCurrentCart();
 		
 		Book book = bookRepository.findById(request.bookId()).orElseThrow(() -> new ResourceNotfoundException("Book not found"));
@@ -89,25 +92,22 @@ public class CartService {
 		item.setQuantity(newQuantity);
 		cartItemRepository.save(item);
 			 
-		return getCurrentCart();
+		return toCartResponse(cart);
 	}
 		 
 	@Transactional
 	public CartResponse getCurrentCart() {
 		Cart cart = getOrCreateCurrentCart();
 			 
-		List<CartItem> items = cartItemRepository.findByCartOrderByIdAsc(cart);
-		List<CartItemResponse> itemResponses = items.stream().map(this::toResponse).toList();
-			 
-		BigDecimal total = itemResponses.stream()
-				.map(CartItemResponse::lineTotal)
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
-			 
-		return new CartResponse(cart.getId(), itemResponses, total);
+		return toCartResponse(cart);
 	}
 	
 	@Transactional
 	public CartResponse updateQuantity(Long itemId, UpdateCartItemRequest request) {
+		
+		if (request.quantity() <= 0) {
+			throw new BusinessRuleException("Quantity must be greater than zero");
+		}
 		
 		Cart cart = getOrCreateCurrentCart();
 		
@@ -125,7 +125,7 @@ public class CartService {
 		
 		cartItemRepository.save(item);
 		
-		return getCurrentCart();
+		return toCartResponse(cart);
 	}
 	
 	@Transactional
@@ -139,9 +139,20 @@ public class CartService {
 		}
 		
 		cartItemRepository.delete(item);
-		return getCurrentCart();
+		return toCartResponse(cart);
 	}
 		 
+	private CartResponse toCartResponse(Cart cart) {
+		List<CartItem> items = cartItemRepository.findByCartOrderByIdAsc(cart);
+		List<CartItemResponse> itemResponses = items.stream().map(this::toResponse).toList();
+			 
+		BigDecimal total = itemResponses.stream()
+				.map(CartItemResponse::lineTotal)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			 
+		return new CartResponse(cart.getId(), itemResponses, total);
+	}
+	 
 	private CartItemResponse toResponse (CartItem item) {
 		BigDecimal lineTotal = item.getBook().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
 		return new CartItemResponse(

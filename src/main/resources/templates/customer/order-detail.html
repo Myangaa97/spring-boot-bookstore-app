@@ -10,7 +10,7 @@
     <title>My Order Detail</title>
 </head>
 <body>
-    <div class="continer" th:date-order-id="${order.id}" id="order-page">
+    <div class="container" th:attr="data-order-id=${order.id}" id="order-page">
         <a th:href="@{/customer/orders}">Back to orders</a>
         <h1>Order # <span th:text="${order.id}"></span></h1>
         <div id="order-summary">

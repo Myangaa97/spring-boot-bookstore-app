@@ -1,6 +1,7 @@
 package com.bookstore.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -76,6 +77,7 @@ public class User {
 	}
 
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
