@@ -15,6 +15,7 @@
         <h1>Order # <span th:text="${order.id}"></span></h1>
         <div id="order-summary">
             <p>Status: <strong id="order-status" th:text="${order.status}"></strong></p>
+            <p>Payment: <strong id="payment-status" th:text="${order.paymentStatus}">PENDING</strong></p>
             <p>Date: <strong th:text="${order.createdAt}"></strong></p>
             <p>Total: <strong th:text="${order.totalAmount + '$'}"></strong></p>
         </div>
@@ -43,6 +44,17 @@
         <button type="button" id="cancel-order-button" th:if="${order.status == 'PENDING' or order.status == 'CONFIRMED'}">
             Cancel Order
         </button>
+
+        <section class="card payment-card">
+            <h2>Payment</h2>
+            <p>
+                Complete Payment securely using Stripe Checkout.
+            </p>
+
+            <button type="button" id="pay-button" th:if="${order.status == 'PENDING' and order.paymentStatus != 'PAID'}">
+                Pay with Stripe
+            </button>
+        </section>
     </div>
 </body>
 </html>
